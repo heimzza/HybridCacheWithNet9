@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaOne.Api", "FormulaOne.Api\FormulaOne.Api.csproj", "{9650357B-A37C-4F5C-9F0B-320E1E5846ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4B0E9F9F-33C7-44DF-9CF2-90B0CC078B48}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaOne.DataService", "FormulaOne.DataService\FormulaOne.DataService.csproj", "{9A39877E-1502-478B-915F-7A2EBE06C1B2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9650357B-A37C-4F5C-9F0B-320E1E5846ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9650357B-A37C-4F5C-9F0B-320E1E5846ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9650357B-A37C-4F5C-9F0B-320E1E5846ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9650357B-A37C-4F5C-9F0B-320E1E5846ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A39877E-1502-478B-915F-7A2EBE06C1B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A39877E-1502-478B-915F-7A2EBE06C1B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A39877E-1502-478B-915F-7A2EBE06C1B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A39877E-1502-478B-915F-7A2EBE06C1B2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
