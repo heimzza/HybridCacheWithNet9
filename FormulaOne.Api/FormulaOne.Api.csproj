@@ -25,10 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\FormulaOne.DataService\FormulaOne.DataService.csproj" />
       <ProjectReference Include="..\FormulaOne.Entities\FormulaOne.Entities.csproj" />
     </ItemGroup>
