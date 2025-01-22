@@ -8,7 +8,10 @@
 
     <ItemGroup>
       <Folder Include="Data\" />
-      <Folder Include="Repositories\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FormulaOne.Entities\FormulaOne.Entities.csproj" />
     </ItemGroup>
 
 </Project>
