@@ -9,6 +9,8 @@ public class AppDbContext: DbContext
     public DbSet<Driver> Achievements { get; set; }
     private static string DbPath => "app.db";
 
+    public AppDbContext() { }
+    
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
         
@@ -18,25 +20,25 @@ public class AppDbContext: DbContext
         => optionsBuilder.UseSqlite($"Data Source={DbPath}");
 }
 
-public class Driver(string name, string team, string color, int birthYear)
+public class Driver(string name, string team, int birthYear)
 {
     public int Id { get; set; }
     [MaxLength(20)]
     public string Name { get; set; } = name;
     [MaxLength(20)]
     public string Team { get; set; } = team;
-    public int BirthBirthYear { get; set; } = birthYear;
+    public int BirthYear { get; set; } = birthYear;
 }
 
-public class Achievement(string driverId, string place, Achievement.Type type, int year)
+public class Achievement(string driverId, string place, Achievement.MedalType type, int year)
 {
     public int Id { get; set; }
-    public string Place { get; set; } = place;
     public string DriverId { get; set; } = driverId;
-    public Type Type { get; set; } = type;
+    public string Place { get; set; } = place;
+    public MedalType Type { get; set; } = type;
     public int Year { get; set; } = year;
 
-    public enum Type
+    public enum MedalType
     {
         Gold = 1,
         Silver = 2,
