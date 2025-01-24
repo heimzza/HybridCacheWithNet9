@@ -1,6 +1,0 @@
-﻿services:
-  hybridcachewithnet9:
-    image: hybridcachewithnet9
-    build:
-      context: .
-      dockerfile: HybridCacheWithNet9/Dockerfile
