@@ -3,16 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FormulaOne.DataService.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class
+public class Repository<T>(AppDbContext context) : IRepository<T> where T : class
 {
-    private readonly AppDbContext _context;
-    private readonly DbSet<T> _dbSet;
-
-    public Repository(AppDbContext context)
-    {
-        _context = context;
-        _dbSet = _context.Set<T>();
-    }
+    private readonly DbSet<T> _dbSet = context.Set<T>();
 
     public async Task<T> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
 
