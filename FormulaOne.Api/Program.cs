@@ -1,3 +1,4 @@
+using FormulaOne.Api.Filters;
 using FormulaOne.Api.Services;
 using FormulaOne.DataService.Persistence;
 using FormulaOne.Entities.DbSet;
@@ -13,7 +14,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SchemaFilter<SwaggerIgnoreIdFilter>();
+});
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
