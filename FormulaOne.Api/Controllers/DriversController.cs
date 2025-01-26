@@ -19,8 +19,8 @@ public class DriversController : Controller
     }
 
     [HttpGet]
-    [Route("{driverId:int}")]
-    public async Task<IActionResult> GetOne(int driverId)
+    [Route("{driverId:guid}")]
+    public async Task<IActionResult> GetOne(Guid driverId)
     {
         var cacheKey = $"Driver_{driverId}";
         
@@ -32,6 +32,13 @@ public class DriversController : Controller
         }
         
         var driver = await _unitOfWork.Drivers.GetByIdAsync(driverId);
+        
+        if (driver is not null)
+        {
+            _cachingService.Set(cacheKey, driver, TimeSpan.FromMinutes(5));
+            
+            return Ok(driver);
+        }
 
         return NotFound($"No driver found with id {driverId}");
     }

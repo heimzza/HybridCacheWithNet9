@@ -22,7 +22,7 @@ public class AppDbContext: DbContext
 
 public class Driver(string name, string team, int birthYear)
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     [MaxLength(20)]
     public string Name { get; set; } = name;
     [MaxLength(20)]
