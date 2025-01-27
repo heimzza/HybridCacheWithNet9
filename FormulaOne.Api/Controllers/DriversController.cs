@@ -7,7 +7,7 @@ namespace FormulaOne.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-public class DriversController : Controller
+public class DriversController : Controller, ICommonActions<Driver>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICachingService _cachingService;
@@ -19,10 +19,10 @@ public class DriversController : Controller
     }
 
     [HttpGet]
-    [Route("{driverId:guid}")]
-    public async Task<IActionResult> GetOne(Guid driverId)
+    [Route("{id:guid}")]
+    public async Task<IActionResult> GetOne(Guid id)
     {
-        var cacheKey = $"Driver_{driverId}";
+        var cacheKey = $"Driver_{id}";
         
         var cachedDriver = _cachingService.Get<Driver>(cacheKey);
 
@@ -31,7 +31,7 @@ public class DriversController : Controller
             return Ok(cachedDriver);
         }
         
-        var driver = await _unitOfWork.Drivers.GetByIdAsync(driverId);
+        var driver = await _unitOfWork.Drivers.GetByIdAsync(id);
         
         if (driver is not null)
         {
@@ -40,7 +40,7 @@ public class DriversController : Controller
             return Ok(driver);
         }
 
-        return NotFound($"No driver found with id {driverId}");
+        return NotFound($"No driver found with id {id}");
     }
 
     [HttpGet]
@@ -50,14 +50,14 @@ public class DriversController : Controller
         
         var drivers = _cachingService.Get<IEnumerable<Driver>>(cacheKey);
 
-        if (drivers is not null)
+        if (drivers is not null && drivers.Any())
         {
             return Ok(drivers);
         }
         
         drivers = await _unitOfWork.Drivers.GetAllAsync();
 
-        if (drivers is not null)
+        if (drivers is not null && drivers.Any())
         {
             _cachingService.Set(cacheKey, drivers, TimeSpan.FromMinutes(5));
             
@@ -68,7 +68,7 @@ public class DriversController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Upsert(Driver driver)
+    public async Task<IActionResult> InsertOne(Driver driver)
     {
         if (driver is null)
         {
