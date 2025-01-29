@@ -41,7 +41,7 @@ builder.Services.AddHybridCache(options =>
 
     options.DefaultEntryOptions = new HybridCacheEntryOptions()
     {
-        Expiration = TimeSpan.FromMinutes(5)
+        Expiration = TimeSpan.FromSeconds(30)
     };
 });
 #pragma warning restore EXTEXP0018

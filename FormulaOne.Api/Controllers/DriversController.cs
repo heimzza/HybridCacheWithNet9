@@ -2,69 +2,90 @@ using FormulaOne.Api.Services;
 using FormulaOne.DataService.Persistence;
 using FormulaOne.Entities.DbSet;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Hybrid;
 
 namespace FormulaOne.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-public class DriversController : Controller, ICommonActions<Driver>
+public class DriversController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ICachingService _cachingService;
-
-    public DriversController(IUnitOfWork unitOfWork, ICachingService cachingService)
+    private readonly HybridCache _hybridCache;
+    public DriversController(IUnitOfWork unitOfWork, ICachingService cachingService, HybridCache hybridCache)
     {
         _unitOfWork = unitOfWork;
         _cachingService = cachingService;
+        _hybridCache = hybridCache;
     }
 
     [HttpGet]
     [Route("{id:guid}")]
-    public async Task<IActionResult> GetOne(Guid id)
+    public async Task<IActionResult> GetOne(Guid id, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"Driver_{id}";
-        
-        var cachedDriver = _cachingService.Get<Driver>(cacheKey);
 
-        if (cachedDriver is not null)
+        var cachedDriver = await _hybridCache.GetOrCreateAsync(cacheKey, async t =>
         {
-            return Ok(cachedDriver);
-        }
-        
-        var driver = await _unitOfWork.Drivers.GetByIdAsync(id);
-        
-        if (driver is not null)
-        {
-            _cachingService.Set(cacheKey, driver, TimeSpan.FromMinutes(5));
-            
-            return Ok(driver);
-        }
+            var driver = await _unitOfWork.Drivers.GetByIdAsync(id);
 
-        return NotFound($"No driver found with id {id}");
+            return driver;
+        },
+            tags:["driver"],
+            cancellationToken: cancellationToken
+        );
+
+        if (cachedDriver is null)
+            return NotFound($"No driver found with id {id}");
+
+        return Ok(cachedDriver);
     }
+    
+    // [HttpGet]
+    // [Route("{id:guid}")]
+    // public async Task<IActionResult> GetOne(Guid id)
+    // {
+    //     var cacheKey = $"Driver_{id}";
+    //     
+    //     var cachedDriver = _cachingService.Get<Driver>(cacheKey);
+    //
+    //     if (cachedDriver is not null)
+    //     {
+    //         return Ok(cachedDriver);
+    //     }
+    //     
+    //     var driver = await _unitOfWork.Drivers.GetByIdAsync(id);
+    //     
+    //     if (driver is not null)
+    //     {
+    //         _cachingService.Set(cacheKey, driver, TimeSpan.FromMinutes(5));
+    //         
+    //         return Ok(driver);
+    //     }
+    //
+    //     return NotFound($"No driver found with id {id}");
+    // }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
     {
-        const string cacheKey = $"Drivers";
-        
-        var drivers = _cachingService.Get<IEnumerable<Driver>>(cacheKey);
+        var cacheKey = $"AllDrivers2";
 
-        if (drivers is not null && drivers.Any())
-        {
-            return Ok(drivers);
-        }
-        
-        drivers = await _unitOfWork.Drivers.GetAllAsync();
+        var cachedDrivers = await _hybridCache.GetOrCreateAsync(cacheKey, async t =>
+            {
+                var allDrivers = await _unitOfWork.Drivers.GetAllAsync();
 
-        if (drivers is not null && drivers.Any())
-        {
-            _cachingService.Set(cacheKey, drivers, TimeSpan.FromMinutes(5));
-            
-            return Ok(drivers);
-        }
+                return allDrivers;
+            },
+            tags:["driver"],
+            cancellationToken: cancellationToken
+        );
 
-        return NotFound($"No driver found");
+        if (cachedDrivers?.Any() != true)
+            return NotFound($"No driver found");
+
+        return Ok(cachedDrivers);
     }
 
     [HttpPost]
